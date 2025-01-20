@@ -1,0 +1,98 @@
+>- ATranslationUnit
+     `- AFunctionDefinitionDeclarationOrDefinition
+        `- AFunctionDefinition
+           |- AVoidTypeSpecifier
+           |  `- AVoidSpecifier
+           |     `- void
+           |- ADirectFunctionDeclarator
+           |  `- AIdentifierDirectFunctionDeclarator
+           |     |- main
+           |     |- (
+           |     `- )
+           `- AFunctionBody
+              |- {
+              |- AVariableDeclaration
+              |  |- ASignedIntTypeSpecifier
+              |  |  `- AIntSignedIntSpecifier
+              |  |     `- int
+              |  |- ADirectDeclarator
+              |  |  `- AIdentifierDirectDeclarator
+              |  |     `- a
+              |  |- AAdditionalDeclarator
+              |  |  |- ,
+              |  |  `- ADirectDeclarator
+              |  |     `- AIdentifierDirectDeclarator
+              |  |        `- b
+              |  |- AAdditionalDeclarator
+              |  |  |- ,
+              |  |  `- ADirectDeclarator
+              |  |     `- AIdentifierDirectDeclarator
+              |  |        `- x
+              |  |- AAdditionalDeclarator
+              |  |  |- ,
+              |  |  `- ADirectDeclarator
+              |  |     `- AIdentifierDirectDeclarator
+              |  |        `- y
+              |  |- AAdditionalDeclarator
+              |  |  |- ,
+              |  |  `- ADirectDeclarator
+              |  |     `- AIdentifierDirectDeclarator
+              |  |        `- p
+              |  `- ;
+              |- ABasicStmtStatement
+              |  |- AModifyExpressionBasicStatement
+              |  |  `- ADirectModifyExpression
+              |  |     |- AIdentifierVarname
+              |  |     |  `- a
+              |  |     |- =
+              |  |     `- AUnaryRhs
+              |  |        `- AAddressUnaryExpression
+              |  |           |- (
+              |  |           |- &
+              |  |           |- AIdentifierVarname
+              |  |           |  `- x
+              |  |           `- )
+              |  `- ;
+              |- ABasicStmtStatement
+              |  |- AModifyExpressionBasicStatement
+              |  |  `- ADirectModifyExpression
+              |  |     |- AIdentifierVarname
+              |  |     |  `- b
+              |  |     |- =
+              |  |     `- AUnaryRhs
+              |  |        `- AAddressUnaryExpression
+              |  |           |- (
+              |  |           |- &
+              |  |           |- AIdentifierVarname
+              |  |           |  `- y
+              |  |           `- )
+              |  `- ;
+              |- ABasicStmtStatement
+              |  |- AModifyExpressionBasicStatement
+              |  |  `- AIndirectModifyExpression
+              |  |     |- (
+              |  |     |- *
+              |  |     |- p
+              |  |     |- )
+              |  |     |- =
+              |  |     `- AUnaryRhs
+              |  |        `- ASimpleUnaryExpression
+              |  |           `- AVarnameSimpleExpression
+              |  |              `- AIdentifierVarname
+              |  |                 `- x
+              |  `- ;
+              |- ABasicStmtStatement
+              |  |- AModifyExpressionBasicStatement
+              |  |  `- ADirectModifyExpression
+              |  |     |- AIdentifierVarname
+              |  |     |  `- y
+              |  |     |- =
+              |  |     `- AUnaryRhs
+              |  |        `- AAddressUnaryExpression
+              |  |           |- (
+              |  |           |- &
+              |  |           |- AIdentifierVarname
+              |  |           |  `- p
+              |  |           `- )
+              |  `- ;
+              `- }

@@ -1,0 +1,2597 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01  Transitional//EN">
+<html>
+  <head><script type="text/javascript" src="/_static/js/bundle-playback.js?v=HxkREWBo" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=txqj7nKC" charset="utf-8"></script>
+<script>window.RufflePlayer=window.RufflePlayer||{};window.RufflePlayer.config={"autoplay":"on","unmuteOverlay":"hidden"};</script>
+<script type="text/javascript" src="/_static/js/ruffle/ruffle.js"></script>
+<script type="text/javascript">
+    __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://www.sablecc.org:80/contrib/simplec.html","20031212013945","https://web.archive.org/","web","/_static/",
+	      "1071193185");
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=3PDvdIFv" />
+<!-- End Wayback Rewrite JS Include -->
+
+    <title>stdin (a SableCC grammar)</title>
+    <style type="text/css">
+      body {
+         font-family: Helvetica;
+      }
+      h1 {
+         text-align: center;
+      }
+      h2 {
+         text-align: center;
+         color: navy;
+      }
+      div {
+         margin-top: 20px;
+      }
+      a {
+         text-decoration: none;
+         color: black;
+      }
+      a:hover {
+          background-color: yellow;
+      }
+      .package {
+         background-color: ivory;
+         border: double;
+      }
+      .helpers {
+         background-color: linen;
+         border: double;
+      }
+      .states {
+         background-color: lightcyan;
+         border: double;
+      }
+      .tokens {
+         background-color: honeydew;
+         border: double;
+      }
+      .ignored-tokens {
+         background-color: lavender;
+         border: double;
+      }
+      .productions {
+         background-color: lightgoldenrodyellow;
+         border: double;
+      }
+      .ignored-alt {
+         font-style: italic;
+      }
+      .char {
+         color: red;
+      }
+      .dec-char {
+         color: blue;
+      }
+      .hex-char {
+         color: deeppink;
+      }
+      .string {
+         color: green;
+      }
+      .un-op {
+         color: goldenrod;
+         font-weight: bold;
+      }
+      .colname {
+         text-align: right;
+         vertical-align: top;
+         font-weight: bold;
+      }
+      .colequal {
+         vertical-align: top;
+      }
+      .coldata {
+      }
+      .colspare {
+         font-family: courier;
+      }
+      .elem-name {
+         color: blue;
+      }
+      .alt-name {
+         color: red;
+         font-weight: normal;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>stdin</h1>
+    <div class="package">
+    <h2>Package org . sablecc . simplec ; </h2>
+    </div>
+    <div class="helpers">
+    <h2>Helpers </h2>
+      <table>
+        <col class="colname">
+        <col class="colequal">
+        <col class="coldata">
+        <tr>
+          <td><a name="all" href="#all">all </td>
+          <td>= </td>
+          <td>[ <span class="dec-char">0 </span>.. <span class="dec-char">127 </span>] </td>
+        </tr>
+        <tr>
+          <td><a name="digit" href="#digit">digit </td>
+          <td>= </td>
+          <td>[ <span class="char">'0' </span>.. <span class="char">'9' </span>] </td>
+        </tr>
+        <tr>
+          <td><a name="nondigit" href="#nondigit">nondigit </td>
+          <td>= </td>
+          <td>[ <span class="char">'_' </span>+ [ [ <span class="char">'a' </span>.. <span class="char">'z' </span>] + [ <span class="char">'A' </span>.. <span class="char">'Z' </span>] ] ] </td>
+        </tr>
+        <tr>
+          <td><a name="digit_sequence" href="#digit_sequence">digit_sequence </td>
+          <td>= </td>
+          <td><a href="#digit">digit</a> <span class="un-op">+ </span></td>
+        </tr>
+        <tr>
+          <td><a name="fractional_constant" href="#fractional_constant">fractional_constant </td>
+          <td>= </td>
+          <td><a href="#digit_sequence">digit_sequence</a> <span class="un-op">? </span><span class="char">'.' </span><a href="#digit_sequence">digit_sequence</a> <span class="un-op">|</span> <a href="#digit_sequence">digit_sequence</a> <span class="char">'.' </span></td>
+        </tr>
+        <tr>
+          <td><a name="sign" href="#sign">sign </td>
+          <td>= </td>
+          <td><span class="char">'+' </span><span class="un-op">|</span> <span class="char">'-' </span></td>
+        </tr>
+        <tr>
+          <td><a name="exponent_part" href="#exponent_part">exponent_part </td>
+          <td>= </td>
+          <td>( <span class="char">'e' </span><span class="un-op">|</span> <span class="char">'E' </span>) <a href="#sign">sign</a> <span class="un-op">? </span><a href="#digit_sequence">digit_sequence</a> </td>
+        </tr>
+        <tr>
+          <td><a name="floating_suffix" href="#floating_suffix">floating_suffix </td>
+          <td>= </td>
+          <td><span class="char">'f' </span><span class="un-op">|</span> <span class="char">'F' </span><span class="un-op">|</span> <span class="char">'l' </span><span class="un-op">|</span> <span class="char">'L' </span></td>
+        </tr>
+        <tr>
+          <td><a name="simple_escape_sequence" href="#simple_escape_sequence">simple_escape_sequence </td>
+          <td>= </td>
+          <td><span class="char">'\' </span><span class="char">''' </span><span class="un-op">|</span> <span class="string">'\"' </span><span class="un-op">|</span> <span class="string">'\?' </span><span class="un-op">|</span> <span class="string">'\\' </span><span class="un-op">|</span> <span class="string">'\a' </span><span class="un-op">|</span> <span class="string">'\b' </span><span class="un-op">|</span> <span class="string">'\f' </span><span class="un-op">|</span> <span class="string">'\n' </span><span class="un-op">|</span> <span class="string">'\r' </span><span class="un-op">|</span> <span class="string">'\t' </span><span class="un-op">|</span> <span class="string">'\v' </span></td>
+        </tr>
+        <tr>
+          <td><a name="octal_digit" href="#octal_digit">octal_digit </td>
+          <td>= </td>
+          <td>[ <span class="char">'0' </span>.. <span class="char">'7' </span>] </td>
+        </tr>
+        <tr>
+          <td><a name="octal_escape_sequence" href="#octal_escape_sequence">octal_escape_sequence </td>
+          <td>= </td>
+          <td><span class="char">'\' </span><a href="#octal_digit">octal_digit</a> <a href="#octal_digit">octal_digit</a> <span class="un-op">? </span><a href="#octal_digit">octal_digit</a> <span class="un-op">? </span></td>
+        </tr>
+        <tr>
+          <td><a name="hexadecimal_digit" href="#hexadecimal_digit">hexadecimal_digit </td>
+          <td>= </td>
+          <td>[ <a href="#digit">digit</a> + [ [ <span class="char">'a' </span>.. <span class="char">'f' </span>] + [ <span class="char">'A' </span>.. <span class="char">'F' </span>] ] ] </td>
+        </tr>
+        <tr>
+          <td><a name="hexadecimal_escape_sequence" href="#hexadecimal_escape_sequence">hexadecimal_escape_sequence </td>
+          <td>= </td>
+          <td><span class="string">'\x' </span><a href="#hexadecimal_digit">hexadecimal_digit</a> <span class="un-op">+ </span></td>
+        </tr>
+        <tr>
+          <td><a name="escape_sequence" href="#escape_sequence">escape_sequence </td>
+          <td>= </td>
+          <td><a href="#simple_escape_sequence">simple_escape_sequence</a> <span class="un-op">|</span> <a href="#octal_escape_sequence">octal_escape_sequence</a> <span class="un-op">|</span> <a href="#hexadecimal_escape_sequence">hexadecimal_escape_sequence</a> </td>
+        </tr>
+        <tr>
+          <td><a name="s_char" href="#s_char">s_char </td>
+          <td>= </td>
+          <td>[ <a href="#all">all</a> - [ <span class="char">'"' </span>+ [ <span class="char">'\' </span>+ [ <span class="dec-char">10 </span>+ <span class="dec-char">13 </span>] ] ] ] <span class="un-op">|</span> <a href="#escape_sequence">escape_sequence</a> </td>
+        </tr>
+        <tr>
+          <td><a name="s_char_sequence" href="#s_char_sequence">s_char_sequence </td>
+          <td>= </td>
+          <td><a href="#s_char">s_char</a> <span class="un-op">+ </span></td>
+        </tr>
+        <tr>
+          <td><a name="nonzero_digit" href="#nonzero_digit">nonzero_digit </td>
+          <td>= </td>
+          <td>[ <span class="char">'1' </span>.. <span class="char">'9' </span>] </td>
+        </tr>
+        <tr>
+          <td><a name="decimal_constant" href="#decimal_constant">decimal_constant </td>
+          <td>= </td>
+          <td><a href="#nonzero_digit">nonzero_digit</a> <a href="#digit">digit</a> <span class="un-op">* </span></td>
+        </tr>
+        <tr>
+          <td><a name="octal_constant" href="#octal_constant">octal_constant </td>
+          <td>= </td>
+          <td><span class="char">'0' </span><a href="#octal_digit">octal_digit</a> <span class="un-op">* </span></td>
+        </tr>
+        <tr>
+          <td><a name="hexadecimal_constant" href="#hexadecimal_constant">hexadecimal_constant </td>
+          <td>= </td>
+          <td><span class="char">'0' </span>( <span class="char">'x' </span><span class="un-op">|</span> <span class="char">'X' </span>) <a href="#hexadecimal_digit">hexadecimal_digit</a> <span class="un-op">+ </span></td>
+        </tr>
+        <tr>
+          <td><a name="unsigned_suffix" href="#unsigned_suffix">unsigned_suffix </td>
+          <td>= </td>
+          <td><span class="char">'u' </span><span class="un-op">|</span> <span class="char">'U' </span></td>
+        </tr>
+        <tr>
+          <td><a name="long_suffix" href="#long_suffix">long_suffix </td>
+          <td>= </td>
+          <td><span class="char">'l' </span><span class="un-op">|</span> <span class="char">'L' </span></td>
+        </tr>
+        <tr>
+          <td><a name="integer_suffix" href="#integer_suffix">integer_suffix </td>
+          <td>= </td>
+          <td><a href="#unsigned_suffix">unsigned_suffix</a> <a href="#long_suffix">long_suffix</a> <span class="un-op">? </span><span class="un-op">|</span> <a href="#long_suffix">long_suffix</a> <a href="#unsigned_suffix">unsigned_suffix</a> <span class="un-op">? </span></td>
+        </tr>
+        <tr>
+          <td><a name="c_char" href="#c_char">c_char </td>
+          <td>= </td>
+          <td>[ <a href="#all">all</a> - [ <span class="char">''' </span>+ [ <span class="char">'\' </span>+ [ <span class="dec-char">10 </span>+ <span class="dec-char">13 </span>] ] ] ] <span class="un-op">|</span> <a href="#escape_sequence">escape_sequence</a> </td>
+        </tr>
+        <tr>
+          <td><a name="c_char_sequence" href="#c_char_sequence">c_char_sequence </td>
+          <td>= </td>
+          <td><a href="#c_char">c_char</a> <span class="un-op">+ </span></td>
+        </tr>
+        <tr>
+          <td><a name="cr" href="#cr">cr </td>
+          <td>= </td>
+          <td><span class="dec-char">13 </span></td>
+        </tr>
+        <tr>
+          <td><a name="lf" href="#lf">lf </td>
+          <td>= </td>
+          <td><span class="dec-char">10 </span></td>
+        </tr>
+        <tr>
+          <td><a name="not_star" href="#not_star">not_star </td>
+          <td>= </td>
+          <td>[ <a href="#all">all</a> - <span class="char">'*' </span>] </td>
+        </tr>
+        <tr>
+          <td><a name="not_star_slash" href="#not_star_slash">not_star_slash </td>
+          <td>= </td>
+          <td>[ <a href="#not_star">not_star</a> - <span class="char">'/' </span>] </td>
+        </tr>
+        <tr>
+          <td><a name="tab" href="#tab">tab </td>
+          <td>= </td>
+          <td><span class="dec-char">9 </span></td>
+        </tr>
+      </table>
+    </div>
+    <div class="tokens">
+    <h2>Tokens </h2>
+    <table>
+      <col class="colspare">
+      <col class="colname">
+      <col class="colequal">
+      <col class="coldata">
+      <tr>
+        <td></td>
+        <td><a name="dot" href="#dot">dot </td>
+        <td>= </td>
+        <td><span class="char">'.' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="comma" href="#comma">comma </td>
+        <td>= </td>
+        <td><span class="char">',' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="colon" href="#colon">colon </td>
+        <td>= </td>
+        <td><span class="char">':' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="semicolon" href="#semicolon">semicolon </td>
+        <td>= </td>
+        <td><span class="char">';' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="l_par" href="#l_par">l_par </td>
+        <td>= </td>
+        <td><span class="char">'(' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="r_par" href="#r_par">r_par </td>
+        <td>= </td>
+        <td><span class="char">')' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="l_bracket" href="#l_bracket">l_bracket </td>
+        <td>= </td>
+        <td><span class="char">'[' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="r_bracket" href="#r_bracket">r_bracket </td>
+        <td>= </td>
+        <td><span class="char">']' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="l_brace" href="#l_brace">l_brace </td>
+        <td>= </td>
+        <td><span class="char">'{' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="r_brace" href="#r_brace">r_brace </td>
+        <td>= </td>
+        <td><span class="char">'}' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="star" href="#star">star </td>
+        <td>= </td>
+        <td><span class="char">'*' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="div" href="#div">div </td>
+        <td>= </td>
+        <td><span class="char">'/' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="mod" href="#mod">mod </td>
+        <td>= </td>
+        <td><span class="char">'%' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="ampersand" href="#ampersand">ampersand </td>
+        <td>= </td>
+        <td><span class="char">'&amp;' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="plus" href="#plus">plus </td>
+        <td>= </td>
+        <td><span class="char">'+' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="minus" href="#minus">minus </td>
+        <td>= </td>
+        <td><span class="char">'-' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="caret" href="#caret">caret </td>
+        <td>= </td>
+        <td><span class="char">'^' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="tilde" href="#tilde">tilde </td>
+        <td>= </td>
+        <td><span class="char">'~' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="excl_mark" href="#excl_mark">excl_mark </td>
+        <td>= </td>
+        <td><span class="char">'!' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="quest_mark" href="#quest_mark">quest_mark </td>
+        <td>= </td>
+        <td><span class="char">'?' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="bar" href="#bar">bar </td>
+        <td>= </td>
+        <td><span class="char">'|' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="ellipsis" href="#ellipsis">ellipsis </td>
+        <td>= </td>
+        <td><span class="string">'...' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="equal" href="#equal">equal </td>
+        <td>= </td>
+        <td><span class="char">'=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="eq" href="#eq">eq </td>
+        <td>= </td>
+        <td><span class="string">'==' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="neq" href="#neq">neq </td>
+        <td>= </td>
+        <td><span class="string">'!=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="lt" href="#lt">lt </td>
+        <td>= </td>
+        <td><span class="char">'&lt;' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="lteq" href="#lteq">lteq </td>
+        <td>= </td>
+        <td><span class="string">'&lt;=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="gt" href="#gt">gt </td>
+        <td>= </td>
+        <td><span class="char">'&gt;' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="gteq" href="#gteq">gteq </td>
+        <td>= </td>
+        <td><span class="string">'&gt;=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="arrow" href="#arrow">arrow </td>
+        <td>= </td>
+        <td><span class="string">'-&gt;' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="plus_plus" href="#plus_plus">plus_plus </td>
+        <td>= </td>
+        <td><span class="string">'++' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="minus_minus" href="#minus_minus">minus_minus </td>
+        <td>= </td>
+        <td><span class="string">'--' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="shl" href="#shl">shl </td>
+        <td>= </td>
+        <td><span class="string">'&lt;&lt;' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="shr" href="#shr">shr </td>
+        <td>= </td>
+        <td><span class="string">'&gt;&gt;' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="ampersand_ampersand" href="#ampersand_ampersand">ampersand_ampersand </td>
+        <td>= </td>
+        <td><span class="string">'&amp;&amp;' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="bar_bar" href="#bar_bar">bar_bar </td>
+        <td>= </td>
+        <td><span class="string">'||' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="star_equal" href="#star_equal">star_equal </td>
+        <td>= </td>
+        <td><span class="string">'*=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="div_equal" href="#div_equal">div_equal </td>
+        <td>= </td>
+        <td><span class="string">'/=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="mod_equal" href="#mod_equal">mod_equal </td>
+        <td>= </td>
+        <td><span class="string">'%=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="plus_equal" href="#plus_equal">plus_equal </td>
+        <td>= </td>
+        <td><span class="string">'+=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="minus_equal" href="#minus_equal">minus_equal </td>
+        <td>= </td>
+        <td><span class="string">'-=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="shl_equal" href="#shl_equal">shl_equal </td>
+        <td>= </td>
+        <td><span class="string">'&lt;&lt;=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="shr_equal" href="#shr_equal">shr_equal </td>
+        <td>= </td>
+        <td><span class="string">'&gt;&gt;=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="ampersand_equal" href="#ampersand_equal">ampersand_equal </td>
+        <td>= </td>
+        <td><span class="string">'&amp;=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="caret_equal" href="#caret_equal">caret_equal </td>
+        <td>= </td>
+        <td><span class="string">'^=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="bar_equal" href="#bar_equal">bar_equal </td>
+        <td>= </td>
+        <td><span class="string">'|=' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="case" href="#case">case </td>
+        <td>= </td>
+        <td><span class="string">'case' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="default" href="#default">default </td>
+        <td>= </td>
+        <td><span class="string">'default' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="if" href="#if">if </td>
+        <td>= </td>
+        <td><span class="string">'if' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="else" href="#else">else </td>
+        <td>= </td>
+        <td><span class="string">'else' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="switch" href="#switch">switch </td>
+        <td>= </td>
+        <td><span class="string">'switch' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="while" href="#while">while </td>
+        <td>= </td>
+        <td><span class="string">'while' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="do" href="#do">do </td>
+        <td>= </td>
+        <td><span class="string">'do' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="for" href="#for">for </td>
+        <td>= </td>
+        <td><span class="string">'for' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="goto" href="#goto">goto </td>
+        <td>= </td>
+        <td><span class="string">'goto' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="continue" href="#continue">continue </td>
+        <td>= </td>
+        <td><span class="string">'continue' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="break" href="#break">break </td>
+        <td>= </td>
+        <td><span class="string">'break' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="return" href="#return">return </td>
+        <td>= </td>
+        <td><span class="string">'return' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="typedef" href="#typedef">typedef </td>
+        <td>= </td>
+        <td><span class="string">'typedef' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="extern" href="#extern">extern </td>
+        <td>= </td>
+        <td><span class="string">'extern' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="static" href="#static">static </td>
+        <td>= </td>
+        <td><span class="string">'static' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="auto" href="#auto">auto </td>
+        <td>= </td>
+        <td><span class="string">'auto' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="register" href="#register">register </td>
+        <td>= </td>
+        <td><span class="string">'register' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="void" href="#void">void </td>
+        <td>= </td>
+        <td><span class="string">'void' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="char" href="#char">char </td>
+        <td>= </td>
+        <td><span class="string">'char' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="int" href="#int">int </td>
+        <td>= </td>
+        <td><span class="string">'int' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="short" href="#short">short </td>
+        <td>= </td>
+        <td><span class="string">'short' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="long" href="#long">long </td>
+        <td>= </td>
+        <td><span class="string">'long' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="float" href="#float">float </td>
+        <td>= </td>
+        <td><span class="string">'float' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="double" href="#double">double </td>
+        <td>= </td>
+        <td><span class="string">'double' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="signed" href="#signed">signed </td>
+        <td>= </td>
+        <td><span class="string">'signed' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="unsigned" href="#unsigned">unsigned </td>
+        <td>= </td>
+        <td><span class="string">'unsigned' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="struct" href="#struct">struct </td>
+        <td>= </td>
+        <td><span class="string">'struct' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="union" href="#union">union </td>
+        <td>= </td>
+        <td><span class="string">'union' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="enum" href="#enum">enum </td>
+        <td>= </td>
+        <td><span class="string">'enum' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="const" href="#const">const </td>
+        <td>= </td>
+        <td><span class="string">'const' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="volatile" href="#volatile">volatile </td>
+        <td>= </td>
+        <td><span class="string">'volatile' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="sizeof" href="#sizeof">sizeof </td>
+        <td>= </td>
+        <td><span class="string">'sizeof' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="identifier" href="#identifier">identifier </td>
+        <td>= </td>
+        <td><a href="#nondigit">nondigit</a> ( <a href="#digit">digit</a> <span class="un-op">|</span> <a href="#nondigit">nondigit</a> ) <span class="un-op">* </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="floating_constant" href="#floating_constant">floating_constant </td>
+        <td>= </td>
+        <td><a href="#fractional_constant">fractional_constant</a> <a href="#exponent_part">exponent_part</a> <span class="un-op">? </span><a href="#floating_suffix">floating_suffix</a> <span class="un-op">? </span><span class="un-op">|</span> <a href="#digit_sequence">digit_sequence</a> <a href="#exponent_part">exponent_part</a> <a href="#floating_suffix">floating_suffix</a> <span class="un-op">? </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="string_litteral" href="#string_litteral">string_litteral </td>
+        <td>= </td>
+        <td><span class="char">'L' </span><span class="un-op">? </span><span class="char">'"' </span><a href="#s_char_sequence">s_char_sequence</a> <span class="un-op">? </span><span class="char">'"' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="integer_constant" href="#integer_constant">integer_constant </td>
+        <td>= </td>
+        <td><a href="#decimal_constant">decimal_constant</a> <a href="#integer_suffix">integer_suffix</a> <span class="un-op">? </span><span class="un-op">|</span> <a href="#octal_constant">octal_constant</a> <a href="#integer_suffix">integer_suffix</a> <span class="un-op">? </span><span class="un-op">|</span> <a href="#hexadecimal_constant">hexadecimal_constant</a> <a href="#integer_suffix">integer_suffix</a> <span class="un-op">? </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="character_constant" href="#character_constant">character_constant </td>
+        <td>= </td>
+        <td><span class="char">'L' </span><span class="un-op">? </span><span class="char">''' </span><a href="#c_char_sequence">c_char_sequence</a> <span class="char">''' </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="blank" href="#blank">blank </td>
+        <td>= </td>
+        <td>( <a href="#cr">cr</a> <span class="un-op">|</span> <a href="#lf">lf</a> <span class="un-op">|</span> <a href="#tab">tab</a> <span class="un-op">|</span> <span class="char">' ' </span>) <span class="un-op">+ </span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><a name="comment" href="#comment">comment </td>
+        <td>= </td>
+        <td><span class="string">'/*' </span><a href="#not_star">not_star</a> <span class="un-op">* </span><span class="char">'*' </span><span class="un-op">+ </span>( <a href="#not_star_slash">not_star_slash</a> <a href="#not_star">not_star</a> <span class="un-op">* </span><span class="char">'*' </span><span class="un-op">+ </span>) <span class="un-op">* </span><span class="char">'/' </span></td>
+      </tr>
+    </table>
+    </div>
+    <div class="ignored-tokens">
+    <h2>Ignored Tokens </h2>
+    <ul>
+      <li><a href="#blank">blank</a> </li>
+      <li><a href="#comment">comment</a> </li>
+      <li><a href="#extern">extern</a> </li>
+      <li><a href="#static">static</a> </li>
+      <li><a href="#auto">auto</a> </li>
+      <li><a href="#register">register</a> </li>
+      <li><a href="#const">const</a> </li>
+      <li><a href="#volatile">volatile</a> </li>
+    </ul>
+    </div>
+    <div class="productions">
+    <h2>Productions </h2>
+      <table>
+        <col class="colname">
+        <col class="colequal">
+        <col class="coldata">
+         <tr>
+           <td><a name="translation_unit" href="#translation_unit">translation_unit </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#declaration_or_definition">declaration_or_definition</a> <span class="un-op">* </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="declaration_or_definition" href="#declaration_or_definition">declaration_or_definition </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{struct_declaration}</span></td>
+                 <td><a href="#struct_declaration">struct_declaration</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{union_declaration}</span></td>
+                 <td><a href="#union_declaration">union_declaration</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{enum_declaration}</span></td>
+                 <td><a href="#enum_declaration">enum_declaration</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{typedef_declaration}</span></td>
+                 <td><a href="#typedef_declaration">typedef_declaration</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{function_declaration}</span></td>
+                 <td><a href="#function_declaration">function_declaration</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{variable_declaration}</span></td>
+                 <td><a href="#variable_declaration">variable_declaration</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{function_definition}</span></td>
+                 <td><a href="#function_definition">function_definition</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="struct_declaration" href="#struct_declaration">struct_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#struct">struct</a> <a href="#identifier">identifier</a> <a href="#l_brace">l_brace</a> <a href="#member_declaration">member_declaration</a> <span class="un-op">* </span><a href="#r_brace">r_brace</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="member_declaration" href="#member_declaration">member_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#type_specifier">type_specifier</a> <a href="#declarator">declarator</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="type_specifier" href="#type_specifier">type_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{void}</span></td>
+                 <td><a href="#void_specifier">void_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{char}</span></td>
+                 <td><a href="#char_specifier">char_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_char}</span></td>
+                 <td><a href="#signed_char_specifier">signed_char_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_short}</span></td>
+                 <td><a href="#signed_short_specifier">signed_short_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_int}</span></td>
+                 <td><a href="#signed_int_specifier">signed_int_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_long}</span></td>
+                 <td><a href="#signed_long_specifier">signed_long_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unsigned_char}</span></td>
+                 <td><a href="#unsigned_char_specifier">unsigned_char_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unsigned_short}</span></td>
+                 <td><a href="#unsigned_short_specifier">unsigned_short_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unsigned_int}</span></td>
+                 <td><a href="#unsigned_int_specifier">unsigned_int_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unsigned_long}</span></td>
+                 <td><a href="#unsigned_long_specifier">unsigned_long_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{float}</span></td>
+                 <td><a href="#float_specifier">float_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{double}</span></td>
+                 <td><a href="#double_specifier">double_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{long_double}</span></td>
+                 <td><a href="#long_double_specifier">long_double_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{struct}</span></td>
+                 <td><a href="#struct_specifier">struct_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{union}</span></td>
+                 <td><a href="#union_specifier">union_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{enum}</span></td>
+                 <td><a href="#enum_specifier">enum_specifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td class="ignored-alt"><span class="alt-name">{typedef}</span></td>
+                 <td class="ignored-alt"><a href="#identifier">identifier</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="void_specifier" href="#void_specifier">void_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#void">void</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="char_specifier" href="#char_specifier">char_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#char">char</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="signed_char_specifier" href="#signed_char_specifier">signed_char_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#signed">signed</a> <a href="#char">char</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="signed_short_specifier" href="#signed_short_specifier">signed_short_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{short}</span></td>
+                 <td><a href="#short">short</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_short}</span></td>
+                 <td><a href="#signed">signed</a> <a href="#short">short</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{short_int}</span></td>
+                 <td><a href="#short">short</a> <a href="#int">int</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_short_int}</span></td>
+                 <td><a href="#signed">signed</a> <a href="#short">short</a> <a href="#int">int</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="signed_int_specifier" href="#signed_int_specifier">signed_int_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{int}</span></td>
+                 <td><a href="#int">int</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed}</span></td>
+                 <td><a href="#signed">signed</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_int}</span></td>
+                 <td><a href="#signed">signed</a> <a href="#int">int</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="signed_long_specifier" href="#signed_long_specifier">signed_long_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{long}</span></td>
+                 <td><a href="#long">long</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_long}</span></td>
+                 <td><a href="#signed">signed</a> <a href="#long">long</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{long_int}</span></td>
+                 <td><a href="#long">long</a> <a href="#int">int</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{signed_long_int}</span></td>
+                 <td><a href="#signed">signed</a> <a href="#long">long</a> <a href="#int">int</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="unsigned_char_specifier" href="#unsigned_char_specifier">unsigned_char_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#unsigned">unsigned</a> <a href="#char">char</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="unsigned_short_specifier" href="#unsigned_short_specifier">unsigned_short_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{unsigned_short}</span></td>
+                 <td><a href="#unsigned">unsigned</a> <a href="#short">short</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unsigned_short_int}</span></td>
+                 <td><a href="#unsigned">unsigned</a> <a href="#short">short</a> <a href="#int">int</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="unsigned_int_specifier" href="#unsigned_int_specifier">unsigned_int_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{unsigned}</span></td>
+                 <td><a href="#unsigned">unsigned</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unsigned_int}</span></td>
+                 <td><a href="#unsigned">unsigned</a> <a href="#int">int</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="unsigned_long_specifier" href="#unsigned_long_specifier">unsigned_long_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{unsigned_long}</span></td>
+                 <td><a href="#unsigned">unsigned</a> <a href="#long">long</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unsigned_long_int}</span></td>
+                 <td><a href="#unsigned">unsigned</a> <a href="#long">long</a> <a href="#int">int</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="float_specifier" href="#float_specifier">float_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#float">float</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="double_specifier" href="#double_specifier">double_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#double">double</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="long_double_specifier" href="#long_double_specifier">long_double_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#long">long</a> <a href="#double">double</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="struct_specifier" href="#struct_specifier">struct_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#struct">struct</a> <a href="#identifier">identifier</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="union_specifier" href="#union_specifier">union_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#union">union</a> <a href="#identifier">identifier</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="enum_specifier" href="#enum_specifier">enum_specifier </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#enum">enum</a> <a href="#identifier">identifier</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="declarator" href="#declarator">declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#pointer">pointer</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#direct_declarator">direct_declarator</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="pointer" href="#pointer">pointer </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#star">star</a> <a href="#direct_declarator">direct_declarator</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#star">star</a> <a href="#pointer">pointer</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="direct_declarator" href="#direct_declarator">direct_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{array}</span></td>
+                 <td><a href="#array_declarator">array_declarator</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{function}</span></td>
+                 <td><a href="#function_pointer_declarator">function_pointer_declarator</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="array_declarator" href="#array_declarator">array_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#pointer">pointer</a> <a href="#r_par">r_par</a> <a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{array}</span></td>
+                 <td><a href="#array_declarator">array_declarator</a> <a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="function_pointer_declarator" href="#function_pointer_declarator">function_pointer_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><span class="elem-name">[plp]:</span><a href="#l_par">l_par</a> <a href="#pointer">pointer</a> <span class="elem-name">[prp]:</span><a href="#r_par">r_par</a> <span class="elem-name">[pllp]:</span><a href="#l_par">l_par</a> <a href="#parameter_list">parameter_list</a> <span class="un-op">? </span><span class="elem-name">[plrp]:</span><a href="#r_par">r_par</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="parameter_list" href="#parameter_list">parameter_list </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#parameter_declaration">parameter_declaration</a> <a href="#parameter_list_tail">parameter_list_tail</a> <span class="un-op">* </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="parameter_declaration" href="#parameter_declaration">parameter_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#type_specifier">type_specifier</a> <a href="#declarator">declarator</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{abstract}</span></td>
+                 <td><a href="#type_specifier">type_specifier</a> <a href="#abstract_declarator">abstract_declarator</a> <span class="un-op">? </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#declarator">declarator</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{abstract_identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#abstract_declarator">abstract_declarator</a> <span class="un-op">? </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="abstract_declarator" href="#abstract_declarator">abstract_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#abstract_pointer">abstract_pointer</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#abstract_direct_declarator">abstract_direct_declarator</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="abstract_pointer" href="#abstract_pointer">abstract_pointer </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#star">star</a> <a href="#abstract_direct_declarator">abstract_direct_declarator</a> <span class="un-op">? </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#star">star</a> <a href="#abstract_pointer">abstract_pointer</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="abstract_direct_declarator" href="#abstract_direct_declarator">abstract_direct_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{array}</span></td>
+                 <td><a href="#abstract_array_declarator">abstract_array_declarator</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{function}</span></td>
+                 <td><a href="#abstract_function_pointer_declarator">abstract_function_pointer_declarator</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="abstract_array_declarator" href="#abstract_array_declarator">abstract_array_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{integer}</span></td>
+                 <td><a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#abstract_pointer">abstract_pointer</a> <a href="#r_par">r_par</a> <a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{array}</span></td>
+                 <td><a href="#abstract_array_declarator">abstract_array_declarator</a> <a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="abstract_function_pointer_declarator" href="#abstract_function_pointer_declarator">abstract_function_pointer_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><span class="elem-name">[plp]:</span><a href="#l_par">l_par</a> <a href="#abstract_pointer">abstract_pointer</a> <span class="elem-name">[prp]:</span><a href="#r_par">r_par</a> <span class="elem-name">[pllp]:</span><a href="#l_par">l_par</a> <a href="#parameter_list">parameter_list</a> <span class="un-op">? </span><span class="elem-name">[plrp]:</span><a href="#r_par">r_par</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="parameter_list_tail" href="#parameter_list_tail">parameter_list_tail </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#comma">comma</a> <a href="#parameter_declaration">parameter_declaration</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="union_declaration" href="#union_declaration">union_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#union">union</a> <a href="#identifier">identifier</a> <a href="#l_brace">l_brace</a> <a href="#member_declaration">member_declaration</a> <span class="un-op">* </span><a href="#r_brace">r_brace</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="enum_declaration" href="#enum_declaration">enum_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#enum">enum</a> <a href="#identifier">identifier</a> <a href="#l_brace">l_brace</a> <a href="#enumerator">enumerator</a> <a href="#additional_enumerator">additional_enumerator</a> <span class="un-op">* </span><a href="#r_brace">r_brace</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="additional_enumerator" href="#additional_enumerator">additional_enumerator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#comma">comma</a> <a href="#enumerator">enumerator</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="enumerator" href="#enumerator">enumerator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{automatic}</span></td>
+                 <td><a href="#identifier">identifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{specific}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#equal">equal</a> <a href="#constant">constant</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="typedef_declaration" href="#typedef_declaration">typedef_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#typedef">typedef</a> <a href="#type_specifier">type_specifier</a> <a href="#declarator">declarator</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#typedef">typedef</a> <a href="#identifier">identifier</a> <a href="#declarator">declarator</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="function_declaration" href="#function_declaration">function_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#type_specifier">type_specifier</a> <a href="#function_declarator">function_declarator</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#function_declarator">function_declarator</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="function_declarator" href="#function_declarator">function_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#pointer_function">pointer_function</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#direct_function_declarator">direct_function_declarator</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="pointer_function" href="#pointer_function">pointer_function </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#star">star</a> <a href="#direct_function_declarator">direct_function_declarator</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#star">star</a> <a href="#pointer_function">pointer_function</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="direct_function_declarator" href="#direct_function_declarator">direct_function_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{array}</span></td>
+                 <td><a href="#array_function_declarator">array_function_declarator</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#l_par">l_par</a> <a href="#parameter_list">parameter_list</a> <span class="un-op">? </span><a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{function}</span></td>
+                 <td><span class="elem-name">[plp]:</span><a href="#l_par">l_par</a> <a href="#pointer_function">pointer_function</a> <span class="elem-name">[prp]:</span><a href="#r_par">r_par</a> <span class="elem-name">[pllp]:</span><a href="#l_par">l_par</a> <a href="#parameter_list">parameter_list</a> <span class="un-op">? </span><span class="elem-name">[plrp]:</span><a href="#r_par">r_par</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="array_function_declarator" href="#array_function_declarator">array_function_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{pointer}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#pointer_function">pointer_function</a> <a href="#r_par">r_par</a> <a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{array}</span></td>
+                 <td><a href="#array_function_declarator">array_function_declarator</a> <a href="#l_bracket">l_bracket</a> <a href="#integer_constant">integer_constant</a> <span class="un-op">? </span><a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="variable_declaration" href="#variable_declaration">variable_declaration </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#type_specifier">type_specifier</a> <a href="#declarator">declarator</a> <a href="#additional_declarator">additional_declarator</a> <span class="un-op">* </span><a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#declarator">declarator</a> <a href="#additional_declarator">additional_declarator</a> <span class="un-op">* </span><a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="additional_declarator" href="#additional_declarator">additional_declarator </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#comma">comma</a> <a href="#declarator">declarator</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="function_definition" href="#function_definition">function_definition </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#type_specifier">type_specifier</a> <a href="#function_declarator">function_declarator</a> <a href="#function_body">function_body</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#function_declarator">function_declarator</a> <a href="#function_body">function_body</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="function_body" href="#function_body">function_body </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#l_brace">l_brace</a> <a href="#variable_declaration">variable_declaration</a> <span class="un-op">* </span><a href="#statement">statement</a> <span class="un-op">* </span><a href="#stop_statement">stop_statement</a> <span class="un-op">? </span><a href="#r_brace">r_brace</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="compound_statement" href="#compound_statement">compound_statement </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#l_brace">l_brace</a> <a href="#statement">statement</a> <span class="un-op">* </span><a href="#stop_statement">stop_statement</a> <span class="un-op">? </span><a href="#r_brace">r_brace</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="statement" href="#statement">statement </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{comp_stmt}</span></td>
+                 <td><a href="#compound_statement">compound_statement</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{basic_stmt}</span></td>
+                 <td><a href="#basic_statement">basic_statement</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{if}</span></td>
+                 <td><a href="#if">if</a> <a href="#l_par">l_par</a> <a href="#conditional_expression">conditional_expression</a> <a href="#r_par">r_par</a> <a href="#compound_statement">compound_statement</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{if_then_else}</span></td>
+                 <td><a href="#if">if</a> <a href="#l_par">l_par</a> <a href="#conditional_expression">conditional_expression</a> <a href="#r_par">r_par</a> <span class="elem-name">[then_comp_stmt]:</span><a href="#compound_statement">compound_statement</a> <a href="#else">else</a> <span class="elem-name">[else_comp_stmt]:</span><a href="#compound_statement">compound_statement</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{if_else}</span></td>
+                 <td><a href="#if">if</a> <a href="#l_par">l_par</a> <a href="#conditional_expression">conditional_expression</a> <a href="#r_par">r_par</a> <a href="#semicolon">semicolon</a> <a href="#else">else</a> <a href="#compound_statement">compound_statement</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{while}</span></td>
+                 <td><a href="#while">while</a> <a href="#l_par">l_par</a> <a href="#conditional_expression">conditional_expression</a> <a href="#r_par">r_par</a> <a href="#compound_statement">compound_statement</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{do}</span></td>
+                 <td><a href="#do">do</a> <a href="#compound_statement">compound_statement</a> <a href="#while">while</a> <a href="#l_par">l_par</a> <a href="#conditional_expression">conditional_expression</a> <a href="#r_par">r_par</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{for}</span></td>
+                 <td><a href="#for">for</a> <a href="#l_par">l_par</a> <span class="elem-name">[start]:</span><a href="#basic_statement">basic_statement</a> <span class="un-op">? </span><span class="elem-name">[sc_one]:</span><a href="#semicolon">semicolon</a> <a href="#conditional_expression">conditional_expression</a> <span class="un-op">? </span><span class="elem-name">[sc_two]:</span><a href="#semicolon">semicolon</a> <span class="elem-name">[iter]:</span><a href="#basic_statement">basic_statement</a> <span class="un-op">? </span><a href="#r_par">r_par</a> <a href="#compound_statement">compound_statement</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{switch}</span></td>
+                 <td><a href="#switch">switch</a> <a href="#l_par">l_par</a> <a href="#value">value</a> <a href="#r_par">r_par</a> <a href="#case_statements">case_statements</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="basic_statement" href="#basic_statement">basic_statement </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{call_expression}</span></td>
+                 <td><a href="#call_expression">call_expression</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{modify_expression}</span></td>
+                 <td><a href="#modify_expression">modify_expression</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead1}</span></td>
+                 <td><a href="#simple_expression">simple_expression</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead2}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#star">star</a> <a href="#identifier">identifier</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead3}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#ampersand">ampersand</a> <a href="#varname">varname</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead4}</span></td>
+                 <td><a href="#unop">unop</a> <a href="#identifier">identifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead5}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#unop">unop</a> <a href="#identifier">identifier</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead6}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#type_name">type_name</a> <a href="#r_par">r_par</a> <a href="#varname">varname</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead7}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#type_name">type_name</a> <a href="#r_par">r_par</a> <a href="#constant">constant</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="rhs" href="#rhs">rhs </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{binary}</span></td>
+                 <td><a href="#binary_expression">binary_expression</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unary}</span></td>
+                 <td><a href="#unary_expression">unary_expression</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="binary_expression" href="#binary_expression">binary_expression </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#identifier">identifier</a> <a href="#binop">binop</a> <a href="#value">value</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{constant}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#constant">constant</a> <a href="#binop">binop</a> <a href="#value">value</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td class="ignored-alt"></td>
+                 <td class="ignored-alt"><a href="#l_par">l_par</a> <span class="elem-name">[l_value]:</span><a href="#value">value</a> <a href="#binop">binop</a> <span class="elem-name">[r_value]:</span><a href="#value">value</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="value" href="#value">value </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{constant}</span></td>
+                 <td><a href="#constant">constant</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="constant" href="#constant">constant </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{floating}</span></td>
+                 <td><a href="#unop">unop</a> <span class="un-op">? </span><a href="#floating_constant">floating_constant</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{string}</span></td>
+                 <td><a href="#unop">unop</a> <span class="un-op">? </span><a href="#string_litteral">string_litteral</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{integer}</span></td>
+                 <td><a href="#unop">unop</a> <span class="un-op">? </span><a href="#integer_constant">integer_constant</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{character}</span></td>
+                 <td><a href="#unop">unop</a> <span class="un-op">? </span><a href="#character_constant">character_constant</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="binop" href="#binop">binop </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{relop}</span></td>
+                 <td><a href="#relop">relop</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{star}</span></td>
+                 <td><a href="#star">star</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{div}</span></td>
+                 <td><a href="#div">div</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{mod}</span></td>
+                 <td><a href="#mod">mod</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{ampersand}</span></td>
+                 <td><a href="#ampersand">ampersand</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{plus}</span></td>
+                 <td><a href="#plus">plus</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{minus}</span></td>
+                 <td><a href="#minus">minus</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{caret}</span></td>
+                 <td><a href="#caret">caret</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{excl_mark}</span></td>
+                 <td><a href="#excl_mark">excl_mark</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{bar}</span></td>
+                 <td><a href="#bar">bar</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{shl}</span></td>
+                 <td><a href="#shl">shl</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{shr}</span></td>
+                 <td><a href="#shr">shr</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{ampersand_ampersand}</span></td>
+                 <td><a href="#ampersand_ampersand">ampersand_ampersand</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{bar_bar}</span></td>
+                 <td><a href="#bar_bar">bar_bar</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="relop" href="#relop">relop </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{eq}</span></td>
+                 <td><a href="#eq">eq</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{neq}</span></td>
+                 <td><a href="#neq">neq</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{lt}</span></td>
+                 <td><a href="#lt">lt</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{lteq}</span></td>
+                 <td><a href="#lteq">lteq</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{gt}</span></td>
+                 <td><a href="#gt">gt</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{gteq}</span></td>
+                 <td><a href="#gteq">gteq</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="unary_expression" href="#unary_expression">unary_expression </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{simple}</span></td>
+                 <td><a href="#simple_expression">simple_expression</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{reference}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#star">star</a> <a href="#identifier">identifier</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{address}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#ampersand">ampersand</a> <a href="#varname">varname</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{call}</span></td>
+                 <td><a href="#call_expression">call_expression</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{unop}</span></td>
+                 <td><a href="#unop">unop</a> <a href="#identifier">identifier</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{par_unop}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#unop">unop</a> <a href="#identifier">identifier</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{cast}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#type_name">type_name</a> <a href="#r_par">r_par</a> <a href="#varname">varname</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{cast_const}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#type_name">type_name</a> <a href="#r_par">r_par</a> <a href="#constant">constant</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="simple_expression" href="#simple_expression">simple_expression </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{varname}</span></td>
+                 <td><a href="#varname">varname</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{constant}</span></td>
+                 <td><a href="#constant">constant</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="varname" href="#varname">varname </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{arrayref}</span></td>
+                 <td><a href="#arrayref">arrayref</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{compref}</span></td>
+                 <td><a href="#compref">compref</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="arrayref" href="#arrayref">arrayref </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#identifier">identifier</a> <a href="#reflist">reflist</a> <span class="un-op">+ </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="reflist" href="#reflist">reflist </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#l_bracket">l_bracket</a> <a href="#value">value</a> <a href="#r_bracket">r_bracket</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="compref" href="#compref">compref </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{indirect}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#star">star</a> <a href="#identifier">identifier</a> <a href="#r_par">r_par</a> <a href="#idlist">idlist</a> <span class="un-op">+ </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#idlist">idlist</a> <span class="un-op">+ </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="idlist" href="#idlist">idlist </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#dot">dot</a> <a href="#identifier">identifier</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="call_expression" href="#call_expression">call_expression </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#identifier">identifier</a> <a href="#l_par">l_par</a> <a href="#arglist">arglist</a> <span class="un-op">? </span><a href="#r_par">r_par</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="arglist" href="#arglist">arglist </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#value">value</a> <a href="#arglist_tail">arglist_tail</a> <span class="un-op">* </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="arglist_tail" href="#arglist_tail">arglist_tail </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#comma">comma</a> <a href="#value">value</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="unop" href="#unop">unop </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{plus}</span></td>
+                 <td><a href="#plus">plus</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{minus}</span></td>
+                 <td><a href="#minus">minus</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{tilde}</span></td>
+                 <td><a href="#tilde">tilde</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{excl_mark}</span></td>
+                 <td><a href="#excl_mark">excl_mark</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="type_name" href="#type_name">type_name </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#type_specifier">type_specifier</a> <a href="#abstract_declarator">abstract_declarator</a> <span class="un-op">? </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{identifier}</span></td>
+                 <td><a href="#identifier">identifier</a> <a href="#abstract_declarator">abstract_declarator</a> <span class="un-op">? </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="modify_expression" href="#modify_expression">modify_expression </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{direct}</span></td>
+                 <td><a href="#varname">varname</a> <a href="#equal">equal</a> <a href="#rhs">rhs</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{indirect}</span></td>
+                 <td><a href="#l_par">l_par</a> <a href="#star">star</a> <a href="#identifier">identifier</a> <a href="#r_par">r_par</a> <a href="#equal">equal</a> <a href="#rhs">rhs</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="conditional_expression" href="#conditional_expression">conditional_expression </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{rel}</span></td>
+                 <td><a href="#l_par">l_par</a> <span class="elem-name">[left]:</span><a href="#value">value</a> <a href="#relop">relop</a> <span class="elem-name">[right]:</span><a href="#value">value</a> <a href="#r_par">r_par</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{value}</span></td>
+                 <td><a href="#value">value</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="case_statements" href="#case_statements">case_statements </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td></td>
+                 <td><a href="#l_brace">l_brace</a> <a href="#case_statement">case_statement</a> <span class="un-op">+ </span><a href="#default_statement">default_statement</a> <a href="#r_brace">r_brace</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="case_statement" href="#case_statement">case_statement </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{body}</span></td>
+                 <td><a href="#case">case</a> <a href="#constant">constant</a> <a href="#colon">colon</a> <a href="#l_brace">l_brace</a> <a href="#statement">statement</a> <span class="un-op">* </span><a href="#stop_statement">stop_statement</a> <a href="#r_brace">r_brace</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{empty}</span></td>
+                 <td><a href="#case">case</a> <a href="#constant">constant</a> <a href="#colon">colon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="stop_statement" href="#stop_statement">stop_statement </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{break}</span></td>
+                 <td><a href="#break">break</a> <a href="#semicolon">semicolon</a> <a href="#dead_code">dead_code</a> <span class="un-op">* </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{continue}</span></td>
+                 <td><a href="#continue">continue</a> <a href="#semicolon">semicolon</a> <a href="#dead_code">dead_code</a> <span class="un-op">* </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{return}</span></td>
+                 <td><a href="#return">return</a> <a href="#semicolon">semicolon</a> <a href="#dead_code">dead_code</a> <span class="un-op">* </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{return_value}</span></td>
+                 <td><a href="#return">return</a> <a href="#value">value</a> <a href="#semicolon">semicolon</a> <a href="#dead_code">dead_code</a> <span class="un-op">* </span></td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{return_par}</span></td>
+                 <td><a href="#return">return</a> <a href="#l_par">l_par</a> <a href="#value">value</a> <a href="#r_par">r_par</a> <a href="#semicolon">semicolon</a> <a href="#dead_code">dead_code</a> <span class="un-op">* </span></td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="dead_code" href="#dead_code">dead_code </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{dead1}</span></td>
+                 <td><a href="#statement">statement</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead2}</span></td>
+                 <td><a href="#break">break</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead3}</span></td>
+                 <td><a href="#continue">continue</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead4}</span></td>
+                 <td><a href="#return">return</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead5}</span></td>
+                 <td><a href="#return">return</a> <a href="#value">value</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{dead6}</span></td>
+                 <td><a href="#return">return</a> <a href="#l_par">l_par</a> <a href="#value">value</a> <a href="#r_par">r_par</a> <a href="#semicolon">semicolon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+         <tr>
+           <td><a name="default_statement" href="#default_statement">default_statement </td>
+           <td>= </td>
+           <td>
+              <table class="alternatives">
+                <col class="colequal">
+                <col class="colname">
+                <col class="coldata">
+                <tr>
+                <td></td>                 <td><span class="alt-name">{body}</span></td>
+                 <td><a href="#default">default</a> <a href="#colon">colon</a> <a href="#l_brace">l_brace</a> <a href="#statement">statement</a> <span class="un-op">* </span><a href="#stop_statement">stop_statement</a> <a href="#r_brace">r_brace</a> </td>
+                </tr>
+                <tr>
+                  <td><span class="un-op">|</span> </td>
+                 <td><span class="alt-name">{empty}</span></td>
+                 <td><a href="#default">default</a> <a href="#colon">colon</a> </td>
+                </tr>
+             </table>
+           </td>
+         </tr>
+      </table>
+    </div>
+  </body>
+</html>
+ <!--
+     FILE ARCHIVED ON 01:39:45 Dec 12, 2003 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 17:00:21 Jan 20, 2025.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 0.529
+  exclusion.robots: 0.038
+  exclusion.robots.policy: 0.026
+  esindex: 0.009
+  cdx.remote: 5.292
+  LoadShardBlock: 121.824 (3)
+  PetaboxLoader3.datanode: 213.794 (4)
+  load_resource: 689.33
+  PetaboxLoader3.resolve: 529.297
+-->

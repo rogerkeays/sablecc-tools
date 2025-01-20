@@ -1,0 +1,547 @@
+<html>
+<head><script type="text/javascript" src="/_static/js/bundle-playback.js?v=HxkREWBo" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=txqj7nKC" charset="utf-8"></script>
+<script>window.RufflePlayer=window.RufflePlayer||{};window.RufflePlayer.config={"autoplay":"on","unmuteOverlay":"hidden"};</script>
+<script type="text/javascript" src="/_static/js/ruffle/ruffle.js"></script>
+<script type="text/javascript">
+    __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://www.sablecc.org:80/contrib/vimexample.html","20031222024710","https://web.archive.org/","web","/_static/",
+	      "1072061230");
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=3PDvdIFv" />
+<!-- End Wayback Rewrite JS Include -->
+
+<title>~/src/sablecc/grammars/SimpleC/grammar/simplec.sablecc.html</title>
+<meta name="Generator" content="Vim/6.0">
+</head>
+<body bgcolor="#000000" text="#ffffff">
+<pre>
+<font color="#8080ff"><b>/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *</b></font>
+ <font color="#00ff00"><b>*</b></font> This file is part of SimpleC.                                   <font color="#00ff00"><b>*</b></font>
+ <font color="#00ff00"><b>*</b></font> See the file &quot;SimpleC-LICENSE&quot; for Copyright information and    <font color="#00ff00"><b>*</b></font>
+ <font color="#00ff00"><b>*</b></font> the terms and conditions for copying, distribution and          <font color="#00ff00"><b>*</b></font>
+ <font color="#00ff00"><b>*</b></font> modification of SimpleC.                                        <font color="#00ff00"><b>*</b></font>
+ <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>*</b></font>/
+
+<font color="#ffff00"><b>Package</b></font> org.sablecc.simplec;
+
+<font color="#ffff00"><b>Helpers</b></font>
+
+    <font color="#00ffff"><b>all =</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>0</b></font> .. <font color="#ff40ff"><b>127</b></font><font color="#00ff00"><b>]</b></font>;
+    <font color="#00ffff"><b>digit =</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'0'</b></font> .. <font color="#ff40ff"><b>'9'</b></font><font color="#00ff00"><b>]</b></font>;
+    <font color="#00ffff"><b>nondigit =</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'_'</b></font> <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[[</b></font><font color="#ff40ff"><b>'a'</b></font> .. <font color="#ff40ff"><b>'z'</b></font><font color="#00ff00"><b>]</b></font> <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'A'</b></font> .. <font color="#ff40ff"><b>'Z'</b></font><font color="#00ff00"><b>]]]</b></font>;
+    <font color="#00ffff"><b>digit_sequence =</b></font> digit<font color="#00ff00"><b>+</b></font>;
+    <font color="#00ffff"><b>fractional_constant =</b></font> digit_sequence<font color="#00ff00"><b>?</b></font> <font color="#ff40ff"><b>'.'</b></font> digit_sequence <font color="#00ff00"><b>|</b></font> digit_sequence <font color="#ff40ff"><b>'.'</b></font>;
+    <font color="#00ffff"><b>sign =</b></font> <font color="#ff40ff"><b>'+'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'-'</b></font>;
+    <font color="#00ffff"><b>exponent_part =</b></font> <font color="#00ff00"><b>(</b></font><font color="#ff40ff"><b>'e'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'E'</b></font><font color="#00ff00"><b>)</b></font> sign<font color="#00ff00"><b>?</b></font> digit_sequence;
+    <font color="#00ffff"><b>floating_suffix =</b></font> <font color="#ff40ff"><b>'f'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'F'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'l'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'L'</b></font>;
+    <font color="#00ffff"><b>simple_escape_sequence =</b></font> <font color="#ff40ff"><b>'\'</b></font> <font color="#ff40ff"><b>'''</b></font> <font color="#00ff00"><b>|</b></font> '\&quot;' <font color="#00ff00"><b>|</b></font> '\<font color="#00ff00"><b>?</b></font>' <font color="#00ff00"><b>|</b></font> '\\' <font color="#00ff00"><b>|</b></font>
+        '\a' <font color="#00ff00"><b>|</b></font> '\b' <font color="#00ff00"><b>|</b></font> '\f' <font color="#00ff00"><b>|</b></font> '\n' <font color="#00ff00"><b>|</b></font> '\r' <font color="#00ff00"><b>|</b></font> '\t' <font color="#00ff00"><b>|</b></font> '\v';
+    <font color="#00ffff"><b>octal_digit =</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'0'</b></font> .. <font color="#ff40ff"><b>'7'</b></font><font color="#00ff00"><b>]</b></font>;
+    <font color="#00ffff"><b>octal_escape_sequence =</b></font> <font color="#ff40ff"><b>'\'</b></font> octal_digit octal_digit<font color="#00ff00"><b>?</b></font> octal_digit<font color="#00ff00"><b>?</b></font>;
+    <font color="#00ffff"><b>hexadecimal_digit =</b></font> <font color="#00ff00"><b>[</b></font>digit <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[[</b></font><font color="#ff40ff"><b>'a'</b></font> .. <font color="#ff40ff"><b>'f'</b></font><font color="#00ff00"><b>]</b></font> <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'A'</b></font> .. <font color="#ff40ff"><b>'F'</b></font><font color="#00ff00"><b>]]]</b></font>;
+    <font color="#00ffff"><b>hexadecimal_escape_sequence =</b></font> '\x' hexadecimal_digit<font color="#00ff00"><b>+</b></font>;
+    <font color="#00ffff"><b>escape_sequence =</b></font> simple_escape_sequence <font color="#00ff00"><b>|</b></font> octal_escape_sequence <font color="#00ff00"><b>|</b></font> hexadecimal_escape_sequence;
+    <font color="#00ffff"><b>s_char =</b></font> <font color="#00ff00"><b>[</b></font>all - <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'&quot;'</b></font> <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'\'</b></font> <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>10</b></font> <font color="#00ff00"><b>+</b></font> <font color="#ff40ff"><b>13</b></font><font color="#00ff00"><b>]]]]</b></font> <font color="#00ff00"><b>|</b></font> escape_sequence;
+    <font color="#00ffff"><b>s_char_sequence =</b></font> s_char<font color="#00ff00"><b>+</b></font>;
+    <font color="#00ffff"><b>nonzero_digit =</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'1'</b></font> .. <font color="#ff40ff"><b>'9'</b></font><font color="#00ff00"><b>]</b></font>;
+    <font color="#00ffff"><b>decimal_constant =</b></font> nonzero_digit digit<font color="#00ff00"><b>*</b></font>;
+    <font color="#00ffff"><b>octal_constant =</b></font> <font color="#ff40ff"><b>'0'</b></font> octal_digit<font color="#00ff00"><b>*</b></font>;
+    <font color="#00ffff"><b>hexadecimal_constant =</b></font> <font color="#ff40ff"><b>'0'</b></font> <font color="#00ff00"><b>(</b></font><font color="#ff40ff"><b>'x'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'X'</b></font><font color="#00ff00"><b>)</b></font> hexadecimal_digit<font color="#00ff00"><b>+</b></font>;
+    <font color="#00ffff"><b>unsigned_suffix =</b></font> <font color="#ff40ff"><b>'u'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'U'</b></font>;
+    <font color="#00ffff"><b>long_suffix =</b></font> <font color="#ff40ff"><b>'l'</b></font> <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>'L'</b></font>;
+    <font color="#00ffff"><b>integer_suffix =</b></font> unsigned_suffix long_suffix<font color="#00ff00"><b>?</b></font> <font color="#00ff00"><b>|</b></font> long_suffix unsigned_suffix<font color="#00ff00"><b>?</b></font>;
+    <font color="#00ffff"><b>c_char =</b></font> <font color="#00ff00"><b>[</b></font>all - <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'''</b></font> <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>'\'</b></font> <font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>[</b></font><font color="#ff40ff"><b>10</b></font> <font color="#00ff00"><b>+</b></font> <font color="#ff40ff"><b>13</b></font><font color="#00ff00"><b>]]]]</b></font> <font color="#00ff00"><b>|</b></font> escape_sequence;
+    <font color="#00ffff"><b>c_char_sequence =</b></font> c_char<font color="#00ff00"><b>+</b></font>;
+    <font color="#00ffff"><b>cr =</b></font> <font color="#ff40ff"><b>13</b></font>;
+    <font color="#00ffff"><b>lf =</b></font> <font color="#ff40ff"><b>10</b></font>;
+    <font color="#00ffff"><b>not_star =</b></font> <font color="#00ff00"><b>[</b></font>all - <font color="#ff40ff"><b>'*'</b></font><font color="#00ff00"><b>]</b></font>;
+    <font color="#00ffff"><b>not_star_slash =</b></font> <font color="#00ff00"><b>[</b></font>not_star - <font color="#ff40ff"><b>'/'</b></font><font color="#00ff00"><b>]</b></font>;
+    <font color="#00ffff"><b>tab =</b></font> <font color="#ff40ff"><b>9</b></font>;
+
+<font color="#ffff00"><b>Tokens</b></font>
+
+    <font color="#00ffff"><b>dot =</b></font> <font color="#ff40ff"><b>'.'</b></font>;
+    <font color="#00ffff"><b>comma =</b></font> <font color="#ff40ff"><b>','</b></font>;
+    <font color="#00ffff"><b>colon =</b></font> <font color="#ff40ff"><b>':'</b></font>;
+    <font color="#00ffff"><b>semicolon =</b></font> <font color="#ff40ff"><b>';'</b></font>;
+    <font color="#00ffff"><b>l_par =</b></font> <font color="#ff40ff"><b>'('</b></font>;
+    <font color="#00ffff"><b>r_par =</b></font> <font color="#ff40ff"><b>')'</b></font>;
+    <font color="#00ffff"><b>l_bracket =</b></font> <font color="#ff40ff"><b>'['</b></font>;
+    <font color="#00ffff"><b>r_bracket =</b></font> <font color="#ff40ff"><b>']'</b></font>;
+    <font color="#00ffff"><b>l_brace =</b></font> <font color="#ff40ff"><b>'{'</b></font>;
+    <font color="#00ffff"><b>r_brace =</b></font> <font color="#ff40ff"><b>'}'</b></font>;
+    <font color="#00ffff"><b>star =</b></font> <font color="#ff40ff"><b>'*'</b></font>;
+    <font color="#00ffff"><b>div =</b></font> <font color="#ff40ff"><b>'/'</b></font>;
+    <font color="#00ffff"><b>mod =</b></font> <font color="#ff40ff"><b>'%'</b></font>;
+    <font color="#00ffff"><b>ampersand =</b></font> <font color="#ff40ff"><b>'&amp;'</b></font>;
+    <font color="#00ffff"><b>plus =</b></font> <font color="#ff40ff"><b>'+'</b></font>;
+    <font color="#00ffff"><b>minus =</b></font> <font color="#ff40ff"><b>'-'</b></font>;
+    <font color="#00ffff"><b>caret =</b></font> <font color="#ff40ff"><b>'^'</b></font>;
+    <font color="#00ffff"><b>tilde =</b></font> <font color="#ff40ff"><b>'~'</b></font>;
+    <font color="#00ffff"><b>excl_mark =</b></font> <font color="#ff40ff"><b>'!'</b></font>;
+    <font color="#00ffff"><b>quest_mark =</b></font> <font color="#ff40ff"><b>'?'</b></font>;
+    <font color="#00ffff"><b>bar =</b></font> <font color="#ff40ff"><b>'|'</b></font>;
+    <font color="#00ffff"><b>ellipsis =</b></font> '...';
+    <font color="#00ffff"><b>equal =</b></font> <font color="#ff40ff"><b>'='</b></font>;
+    <font color="#00ffff"><b>eq =</b></font> '==';
+    <font color="#00ffff"><b>neq =</b></font> '!=';
+    <font color="#00ffff"><b>lt =</b></font> <font color="#ff40ff"><b>'&lt;'</b></font>;
+    <font color="#00ffff"><b>lteq =</b></font> '&lt;=';
+    <font color="#00ffff"><b>gt =</b></font> <font color="#ff40ff"><b>'&gt;'</b></font>;
+    <font color="#00ffff"><b>gteq =</b></font> '&gt;=';
+    <font color="#00ffff"><b>arrow =</b></font> '-&gt;';
+    <font color="#00ffff"><b>plus_plus =</b></font> '<font color="#00ff00"><b>++</b></font>';
+    <font color="#00ffff"><b>minus_minus =</b></font> '--';
+    <font color="#00ffff"><b>shl =</b></font> '&lt;&lt;';
+    <font color="#00ffff"><b>shr =</b></font> '&gt;&gt;';
+    <font color="#00ffff"><b>ampersand_ampersand =</b></font> '&amp;&amp;';
+    <font color="#00ffff"><b>bar_bar =</b></font> '<font color="#00ff00"><b>||</b></font>';
+    <font color="#00ffff"><b>star_equal =</b></font> '<font color="#00ff00"><b>*</b></font>=';
+    <font color="#00ffff"><b>div_equal =</b></font> '/=';
+    <font color="#00ffff"><b>mod_equal =</b></font> '%=';
+    <font color="#00ffff"><b>plus_equal =</b></font> '<font color="#00ff00"><b>+</b></font>=';
+    <font color="#00ffff"><b>minus_equal =</b></font> '-=';
+    <font color="#00ffff"><b>shl_equal =</b></font> '&lt;&lt;=';
+    <font color="#00ffff"><b>shr_equal =</b></font> '&gt;&gt;=';
+    <font color="#00ffff"><b>ampersand_equal =</b></font> '&amp;=';
+    <font color="#00ffff"><b>caret_equal =</b></font> '^=';
+    <font color="#00ffff"><b>bar_equal =</b></font> '<font color="#00ff00"><b>|</b></font>=';
+
+    <font color="#00ffff"><b>case =</b></font> 'case';
+    <font color="#00ffff"><b>default =</b></font> 'default';
+    <font color="#00ffff"><b>if =</b></font> 'if';
+    <font color="#00ffff"><b>else =</b></font> 'else';
+    <font color="#00ffff"><b>switch =</b></font> 'switch';
+    <font color="#00ffff"><b>while =</b></font> 'while';
+    <font color="#00ffff"><b>do =</b></font> 'do';
+    <font color="#00ffff"><b>for =</b></font> 'for';
+    <font color="#00ffff"><b>goto =</b></font> 'goto';
+    <font color="#00ffff"><b>continue =</b></font> 'continue';
+    <font color="#00ffff"><b>break =</b></font> 'break';
+    <font color="#00ffff"><b>return =</b></font> 'return';
+    <font color="#00ffff"><b>typedef =</b></font> 'typedef';
+    <font color="#00ffff"><b>extern =</b></font> 'extern';
+    <font color="#00ffff"><b>static =</b></font> 'static';
+    <font color="#00ffff"><b>auto =</b></font> 'auto';
+    <font color="#00ffff"><b>register =</b></font> 'register';
+    <font color="#00ffff"><b>void =</b></font> 'void';
+    <font color="#00ffff"><b>char =</b></font> 'char';
+    <font color="#00ffff"><b>int =</b></font> 'int';
+    <font color="#00ffff"><b>short =</b></font> 'short';
+    <font color="#00ffff"><b>long =</b></font> 'long';
+    <font color="#00ffff"><b>float =</b></font> 'float';
+    <font color="#00ffff"><b>double =</b></font> 'double';
+    <font color="#00ffff"><b>signed =</b></font> 'signed';
+    <font color="#00ffff"><b>unsigned =</b></font> 'unsigned';
+    <font color="#00ffff"><b>struct =</b></font> 'struct';
+    <font color="#00ffff"><b>union =</b></font> 'union';
+    <font color="#00ffff"><b>enum =</b></font> 'enum';
+    <font color="#00ffff"><b>const =</b></font> 'const';
+    <font color="#00ffff"><b>volatile =</b></font> 'volatile';
+    <font color="#00ffff"><b>sizeof =</b></font> 'sizeof';
+
+    <font color="#00ffff"><b>identifier =</b></font> nondigit <font color="#00ff00"><b>(</b></font>digit <font color="#00ff00"><b>|</b></font> nondigit<font color="#00ff00"><b>)*</b></font>;
+    <font color="#00ffff"><b>floating_constant =</b></font> fractional_constant exponent_part<font color="#00ff00"><b>?</b></font> floating_suffix<font color="#00ff00"><b>?</b></font> <font color="#00ff00"><b>|</b></font>
+        digit_sequence exponent_part floating_suffix<font color="#00ff00"><b>?</b></font>;
+    <font color="#00ffff"><b>string_litteral =</b></font> <font color="#ff40ff"><b>'L'</b></font><font color="#00ff00"><b>?</b></font> <font color="#ff40ff"><b>'&quot;'</b></font> s_char_sequence<font color="#00ff00"><b>?</b></font> <font color="#ff40ff"><b>'&quot;'</b></font>;
+    <font color="#00ffff"><b>integer_constant =</b></font> decimal_constant integer_suffix<font color="#00ff00"><b>?</b></font> <font color="#00ff00"><b>|</b></font> octal_constant integer_suffix<font color="#00ff00"><b>?</b></font> <font color="#00ff00"><b>|</b></font>
+        hexadecimal_constant integer_suffix<font color="#00ff00"><b>?</b></font>;
+    <font color="#00ffff"><b>character_constant =</b></font> <font color="#ff40ff"><b>'L'</b></font><font color="#00ff00"><b>?</b></font> <font color="#ff40ff"><b>'''</b></font> c_char_sequence <font color="#ff40ff"><b>'''</b></font>;
+    <font color="#00ffff"><b>blank =</b></font> <font color="#00ff00"><b>(</b></font>cr <font color="#00ff00"><b>|</b></font> lf <font color="#00ff00"><b>|</b></font> tab <font color="#00ff00"><b>|</b></font> <font color="#ff40ff"><b>' '</b></font><font color="#00ff00"><b>)+</b></font>;
+    <font color="#00ffff"><b>comment =</b></font> '<font color="#8080ff"><b>/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';</b></font>
+
+<font color="#ffff00"><b>Ignored</b></font> <font color="#ffff00"><b>Tokens</b></font>
+
+    blank,
+    comment,
+    extern,
+    static,
+    auto,
+    register,
+    const,
+    volatile;
+
+<font color="#ffff00"><b>Productions</b></font>
+
+    <font color="#00ffff"><b>translation_unit =</b></font>
+        declaration_or_definition<font color="#00ff00"><b>*</b></font>;
+
+    <font color="#00ffff"><b>declaration_or_definition =</b></font>
+        <font color="#ffff00"><b>{struct_declaration}</b></font>   struct_declaration <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{union_declaration}</b></font>    union_declaration <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{enum_declaration}</b></font>    enum_declaration <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{typedef_declaration}</b></font>  typedef_declaration <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{function_declaration}</b></font> function_declaration <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{variable_declaration}</b></font> variable_declaration <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{function_definition}</b></font>  function_definition;
+
+    <font color="#00ffff"><b>struct_declaration =</b></font>
+        struct identifier l_brace member_declaration<font color="#00ff00"><b>*</b></font> r_brace semicolon;
+
+    <font color="#00ffff"><b>member_declaration =</b></font>
+        type_specifier declarator semicolon;
+
+    <font color="#00ffff"><b>type_specifier =</b></font>
+        <font color="#ffff00"><b>{void}</b></font>           void_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{char}</b></font>           char_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_char}</b></font>    signed_char_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_short}</b></font>   signed_short_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_int}</b></font>     signed_int_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_long}</b></font>    signed_long_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unsigned_char}</b></font>  unsigned_char_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unsigned_short}</b></font> unsigned_short_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unsigned_int}</b></font>   unsigned_int_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unsigned_long}</b></font>  unsigned_long_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{float}</b></font>          float_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{double}</b></font>         double_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{long_double}</b></font>    long_double_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{struct}</b></font>         struct_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{union}</b></font>          union_specifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{enum}</b></font>           enum_specifier <font color="#00ff00"><b>|</b></font>
+
+<font color="#8080ff"><b>// for modified AST</b></font>
+        <font color="#00ff00"><b>(</b></font><font color="#ffff00"><b>{typedef}</b></font>       identifier<font color="#00ff00"><b>)</b></font>;
+
+    <font color="#00ffff"><b>void_specifier =</b></font>
+        void;
+
+    <font color="#00ffff"><b>char_specifier =</b></font>
+        char;
+
+    <font color="#00ffff"><b>signed_char_specifier =</b></font>
+        signed char;
+
+    <font color="#00ffff"><b>signed_short_specifier =</b></font>
+        <font color="#ffff00"><b>{short}</b></font>            short <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_short}</b></font>     signed short <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{short_int}</b></font>        short int <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_short_int}</b></font> signed short int;
+
+    <font color="#00ffff"><b>signed_int_specifier =</b></font>
+        <font color="#ffff00"><b>{int}</b></font>        int <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed}</b></font>     signed <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_int}</b></font> signed int;
+
+    <font color="#00ffff"><b>signed_long_specifier =</b></font>
+        <font color="#ffff00"><b>{long}</b></font>            long <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_long}</b></font>     signed long <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{long_int}</b></font>        long int <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{signed_long_int}</b></font> signed long int;
+
+    <font color="#00ffff"><b>unsigned_char_specifier =</b></font>
+        unsigned char;
+
+    <font color="#00ffff"><b>unsigned_short_specifier =</b></font>
+        <font color="#ffff00"><b>{unsigned_short}</b></font>     unsigned short <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unsigned_short_int}</b></font> unsigned short int;
+
+    <font color="#00ffff"><b>unsigned_int_specifier =</b></font>
+        <font color="#ffff00"><b>{unsigned}</b></font>     unsigned <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unsigned_int}</b></font> unsigned int;
+
+    <font color="#00ffff"><b>unsigned_long_specifier =</b></font>
+        <font color="#ffff00"><b>{unsigned_long}</b></font>     unsigned long <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unsigned_long_int}</b></font> unsigned long int;
+
+    <font color="#00ffff"><b>float_specifier =</b></font>
+        float;
+
+    <font color="#00ffff"><b>double_specifier =</b></font>
+        double;
+
+    <font color="#00ffff"><b>long_double_specifier =</b></font>
+        long double;
+
+    <font color="#00ffff"><b>struct_specifier =</b></font>
+        struct identifier;
+
+    <font color="#00ffff"><b>union_specifier =</b></font>
+        union identifier;
+
+    <font color="#00ffff"><b>enum_specifier =</b></font>
+        enum identifier;
+
+    <font color="#00ffff"><b>declarator =</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> pointer <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>  direct_declarator;
+
+    <font color="#00ffff"><b>pointer =</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>  star direct_declarator <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> star pointer;
+
+    <font color="#00ffff"><b>direct_declarator =</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{array}</b></font>      array_declarator <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{function}</b></font>   function_pointer_declarator;
+
+    <font color="#00ffff"><b>array_declarator =</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font>    l_par pointer r_par l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{array}</b></font>      array_declarator l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket;
+
+    <font color="#00ffff"><b>function_pointer_declarator =</b></font>
+        <font color="#ff6060"><b>[plp]</b></font>:l_par pointer <font color="#ff6060"><b>[prp]</b></font>:r_par <font color="#ff6060"><b>[pllp]</b></font>:l_par parameter_list<font color="#00ff00"><b>?</b></font> <font color="#ff6060"><b>[plrp]</b></font>:r_par;
+
+    <font color="#00ffff"><b>parameter_list =</b></font>
+        parameter_declaration parameter_list_tail<font color="#00ff00"><b>*</b></font>;
+
+    <font color="#00ffff"><b>parameter_declaration =</b></font>
+                              type_specifier declarator <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{abstract}</b></font>            type_specifier abstract_declarator<font color="#00ff00"><b>?</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font>          identifier declarator <font color="#00ff00"><b>|</b></font>         <font color="#8080ff"><b>// will be removed from AST</b></font>
+        <font color="#ffff00"><b>{abstract_identifier}</b></font> identifier abstract_declarator<font color="#00ff00"><b>?</b></font>; <font color="#8080ff"><b>// will be removed from AST</b></font>
+
+    <font color="#00ffff"><b>abstract_declarator =</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> abstract_pointer <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>  abstract_direct_declarator;
+
+    <font color="#00ffff"><b>abstract_pointer =</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>  star abstract_direct_declarator<font color="#00ff00"><b>?</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> star abstract_pointer;
+
+    <font color="#00ffff"><b>abstract_direct_declarator =</b></font>
+        <font color="#ffff00"><b>{array}</b></font>    abstract_array_declarator <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{function}</b></font> abstract_function_pointer_declarator;
+
+    <font color="#00ffff"><b>abstract_array_declarator =</b></font>
+        <font color="#ffff00"><b>{integer}</b></font> l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> l_par abstract_pointer r_par l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{array}</b></font>   abstract_array_declarator l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket;
+
+    <font color="#00ffff"><b>abstract_function_pointer_declarator =</b></font>
+        <font color="#ff6060"><b>[plp]</b></font>:l_par abstract_pointer <font color="#ff6060"><b>[prp]</b></font>:r_par <font color="#ff6060"><b>[pllp]</b></font>:l_par parameter_list<font color="#00ff00"><b>?</b></font> <font color="#ff6060"><b>[plrp]</b></font>:r_par;
+
+    <font color="#00ffff"><b>parameter_list_tail =</b></font>
+        comma parameter_declaration;
+
+    <font color="#00ffff"><b>union_declaration =</b></font>
+        union identifier l_brace member_declaration<font color="#00ff00"><b>*</b></font> r_brace semicolon;
+
+    <font color="#00ffff"><b>enum_declaration =</b></font>
+        enum identifier l_brace enumerator additional_enumerator<font color="#00ff00"><b>*</b></font> r_brace semicolon;
+
+    <font color="#00ffff"><b>additional_enumerator =</b></font>
+        comma enumerator;
+
+    <font color="#00ffff"><b>enumerator =</b></font>
+        <font color="#ffff00"><b>{automatic}</b></font> identifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{specific}</b></font>  identifier equal constant;
+
+    <font color="#00ffff"><b>typedef_declaration =</b></font>
+        typedef type_specifier declarator semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> typedef identifier declarator semicolon; <font color="#8080ff"><b>// will be removed from AST</b></font>
+
+    <font color="#00ffff"><b>function_declaration =</b></font>
+        type_specifier function_declarator semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier function_declarator semicolon; <font color="#8080ff"><b>// will be removed from AST</b></font>
+
+    <font color="#00ffff"><b>function_declarator =</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> pointer_function <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>  direct_function_declarator;
+
+    <font color="#00ffff"><b>pointer_function =</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>  star direct_function_declarator <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> star pointer_function;
+
+    <font color="#00ffff"><b>direct_function_declarator =</b></font>
+        <font color="#ffff00"><b>{array}</b></font>      array_function_declarator <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier l_par parameter_list<font color="#00ff00"><b>?</b></font> r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{function}</b></font>   <font color="#ff6060"><b>[plp]</b></font>:l_par pointer_function <font color="#ff6060"><b>[prp]</b></font>:r_par <font color="#ff6060"><b>[pllp]</b></font>:l_par parameter_list<font color="#00ff00"><b>?</b></font> <font color="#ff6060"><b>[plrp]</b></font>:r_par;
+
+    <font color="#00ffff"><b>array_function_declarator =</b></font>
+        <font color="#ffff00"><b>{pointer}</b></font> l_par pointer_function r_par l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{array}</b></font>   array_function_declarator l_bracket integer_constant<font color="#00ff00"><b>?</b></font> r_bracket;
+
+    <font color="#00ffff"><b>variable_declaration =</b></font>
+        type_specifier declarator additional_declarator<font color="#00ff00"><b>*</b></font> semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier declarator additional_declarator<font color="#00ff00"><b>*</b></font> semicolon; <font color="#8080ff"><b>// will be removed from AST</b></font>
+
+    <font color="#00ffff"><b>additional_declarator =</b></font>
+        comma declarator;
+
+    <font color="#00ffff"><b>function_definition =</b></font>
+        type_specifier function_declarator function_body <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier function_declarator function_body; <font color="#8080ff"><b>// will be removed from AST</b></font>
+
+    <font color="#00ffff"><b>function_body =</b></font>
+        l_brace variable_declaration<font color="#00ff00"><b>*</b></font> statement<font color="#00ff00"><b>*</b></font> stop_statement<font color="#00ff00"><b>?</b></font> r_brace;
+
+    <font color="#00ffff"><b>compound_statement =</b></font>
+        l_brace statement<font color="#00ff00"><b>*</b></font> stop_statement<font color="#00ff00"><b>?</b></font> r_brace;
+
+    <font color="#00ffff"><b>statement =</b></font>
+        <font color="#ffff00"><b>{comp_stmt}</b></font>    compound_statement <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{basic_stmt}</b></font>   basic_statement semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{if}</b></font>           if l_par conditional_expression r_par compound_statement <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{if_then_else}</b></font> if l_par conditional_expression r_par <font color="#ff6060"><b>[then_comp_stmt]</b></font>:compound_statement else <font color="#ff6060"><b>[else_comp_stmt]</b></font>:compound_statement <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{if_else}</b></font>      if l_par conditional_expression r_par semicolon else compound_statement <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{while}</b></font>        while l_par conditional_expression r_par compound_statement <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{do}</b></font>           do compound_statement while l_par conditional_expression r_par semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{for}</b></font>          for l_par <font color="#ff6060"><b>[start]</b></font>:basic_statement<font color="#00ff00"><b>?</b></font> <font color="#ff6060"><b>[sc_one]</b></font>:semicolon conditional_expression<font color="#00ff00"><b>?</b></font> <font color="#ff6060"><b>[sc_two]</b></font>:semicolon <font color="#ff6060"><b>[iter]</b></font>:basic_statement<font color="#00ff00"><b>?</b></font> r_par compound_statement <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{switch}</b></font>       switch l_par value r_par case_statements;
+
+    <font color="#00ffff"><b>basic_statement =</b></font>
+        <font color="#ffff00"><b>{call_expression}</b></font>   call_expression <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{modify_expression}</b></font> modify_expression <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead1}</b></font> simple_expression <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead2}</b></font> l_par star identifier r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead3}</b></font> l_par ampersand varname r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead4}</b></font> unop identifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead5}</b></font> l_par unop identifier r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead6}</b></font> l_par type_name r_par varname <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead7}</b></font> l_par type_name r_par constant;
+
+    <font color="#00ffff"><b>rhs =</b></font>
+        <font color="#ffff00"><b>{binary}</b></font> binary_expression <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unary}</b></font>  unary_expression;
+
+    <font color="#00ffff"><b>binary_expression =</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> l_par identifier binop value r_par <font color="#00ff00"><b>|</b></font> <font color="#8080ff"><b>// will be removed from AST</b></font>
+        <font color="#ffff00"><b>{constant}</b></font>   l_par constant binop value r_par <font color="#00ff00"><b>|</b></font> <font color="#8080ff"><b>// will be removed from AST</b></font>
+
+<font color="#8080ff"><b>// For modified AST</b></font>
+        <font color="#00ff00"><b>(</b></font> l_par <font color="#ff6060"><b>[l_value]</b></font>:value binop <font color="#ff6060"><b>[r_value]</b></font>:value r_par <font color="#00ff00"><b>)</b></font>;
+
+    <font color="#00ffff"><b>value =</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{constant}</b></font>   constant;
+
+    <font color="#00ffff"><b>constant =</b></font>
+        <font color="#ffff00"><b>{floating}</b></font>  unop<font color="#00ff00"><b>?</b></font> floating_constant <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{string}</b></font>    unop<font color="#00ff00"><b>?</b></font> string_litteral <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{integer}</b></font>   unop<font color="#00ff00"><b>?</b></font> integer_constant <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{character}</b></font> unop<font color="#00ff00"><b>?</b></font> character_constant;
+
+    <font color="#00ffff"><b>binop =</b></font>
+        <font color="#ffff00"><b>{relop}</b></font>               relop <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{star}</b></font>                star <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{div}</b></font>                 div <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{mod}</b></font>                 mod <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{ampersand}</b></font>           ampersand <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{plus}</b></font>                plus <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{minus}</b></font>               minus <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{caret}</b></font>               caret <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{excl_mark}</b></font>           excl_mark <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{bar}</b></font>                 bar <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{shl}</b></font>                 shl <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{shr}</b></font>                 shr <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{ampersand_ampersand}</b></font> ampersand_ampersand <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{bar_bar}</b></font>             bar_bar;
+
+    <font color="#00ffff"><b>relop =</b></font>
+        <font color="#ffff00"><b>{eq}</b></font>   eq <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{neq}</b></font>  neq <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{lt}</b></font>   lt <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{lteq}</b></font> lteq <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{gt}</b></font>   gt <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{gteq}</b></font> gteq;
+
+    <font color="#00ffff"><b>unary_expression =</b></font>
+        <font color="#ffff00"><b>{simple}</b></font>     simple_expression <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{reference}</b></font>  l_par star identifier r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{address}</b></font>    l_par ampersand varname r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{call}</b></font>       call_expression <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{unop}</b></font>       unop identifier <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{par_unop}</b></font>   l_par unop identifier r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{cast}</b></font>       l_par type_name r_par varname <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{cast_const}</b></font> l_par type_name r_par constant;
+
+    <font color="#00ffff"><b>simple_expression =</b></font>
+        <font color="#ffff00"><b>{varname}</b></font> varname <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{constant}</b></font> constant;
+
+    <font color="#00ffff"><b>varname =</b></font>
+        <font color="#ffff00"><b>{arrayref}</b></font>   arrayref <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{compref}</b></font>    compref <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier;
+
+    <font color="#00ffff"><b>arrayref =</b></font>
+        identifier reflist<font color="#00ff00"><b>+</b></font>;
+
+    <font color="#00ffff"><b>reflist =</b></font>
+        l_bracket value r_bracket;
+
+    <font color="#00ffff"><b>compref =</b></font>
+        <font color="#ffff00"><b>{indirect}</b></font> l_par star identifier r_par idlist<font color="#00ff00"><b>+</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>   identifier idlist<font color="#00ff00"><b>+</b></font>;
+
+    <font color="#00ffff"><b>idlist =</b></font>
+        dot identifier;
+
+    <font color="#00ffff"><b>call_expression =</b></font>
+        identifier l_par arglist<font color="#00ff00"><b>?</b></font> r_par;
+
+    <font color="#00ffff"><b>arglist =</b></font>
+        value arglist_tail<font color="#00ff00"><b>*</b></font>;
+
+    <font color="#00ffff"><b>arglist_tail =</b></font>
+        comma value;
+
+    <font color="#00ffff"><b>unop =</b></font>
+        <font color="#ffff00"><b>{plus}</b></font>      plus <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{minus}</b></font>     minus <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{tilde}</b></font>     tilde <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{excl_mark}</b></font> excl_mark;
+
+    <font color="#00ffff"><b>type_name =</b></font>
+        type_specifier abstract_declarator<font color="#00ff00"><b>?</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{identifier}</b></font> identifier abstract_declarator<font color="#00ff00"><b>?</b></font>; <font color="#8080ff"><b>// will be removed from AST</b></font>
+
+    <font color="#00ffff"><b>modify_expression =</b></font>
+        <font color="#ffff00"><b>{direct}</b></font>   varname equal rhs <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{indirect}</b></font> l_par star identifier r_par equal rhs;
+
+    <font color="#00ffff"><b>conditional_expression =</b></font>
+        <font color="#ffff00"><b>{rel}</b></font>   l_par <font color="#ff6060"><b>[left]</b></font>:value relop <font color="#ff6060"><b>[right]</b></font>:value r_par <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{value}</b></font> value;
+
+    <font color="#00ffff"><b>case_statements =</b></font>
+        l_brace case_statement<font color="#00ff00"><b>+</b></font> default_statement r_brace;
+
+    <font color="#00ffff"><b>case_statement =</b></font>
+        <font color="#ffff00"><b>{body}</b></font>  case constant colon l_brace statement<font color="#00ff00"><b>*</b></font> stop_statement r_brace <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{empty}</b></font> case constant colon;
+
+    <font color="#00ffff"><b>stop_statement =</b></font>
+        <font color="#ffff00"><b>{break}</b></font>        break semicolon dead_code<font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{continue}</b></font>     continue semicolon dead_code<font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{return}</b></font>       return semicolon dead_code<font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{return_value}</b></font> return value semicolon dead_code<font color="#00ff00"><b>*</b></font> <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{return_par}</b></font>   return l_par value r_par semicolon dead_code<font color="#00ff00"><b>*</b></font>;
+
+    <font color="#00ffff"><b>dead_code =</b></font>
+        <font color="#ffff00"><b>{dead1}</b></font> statement <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead2}</b></font> break semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead3}</b></font> continue semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead4}</b></font> return semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead5}</b></font> return value semicolon <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{dead6}</b></font> return l_par value r_par semicolon;
+
+    <font color="#00ffff"><b>default_statement =</b></font>
+        <font color="#ffff00"><b>{body}</b></font>  default colon l_brace statement<font color="#00ff00"><b>*</b></font> stop_statement r_brace <font color="#00ff00"><b>|</b></font>
+        <font color="#ffff00"><b>{empty}</b></font> default colon;
+</pre>
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 02:47:10 Dec 22, 2003 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 17:00:59 Jan 20, 2025.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 0.783
+  exclusion.robots: 0.05
+  exclusion.robots.policy: 0.03
+  esindex: 0.019
+  cdx.remote: 9.679
+  LoadShardBlock: 481.805 (3)
+  PetaboxLoader3.datanode: 573.425 (4)
+  PetaboxLoader3.resolve: 317.039 (2)
+  load_resource: 576.263
+-->
